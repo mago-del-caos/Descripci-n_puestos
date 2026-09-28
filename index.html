@@ -7,6 +7,9 @@
     <title>Sistema de Registro - Instituto Juventud</title>
     <!-- Librería SheetJS para exportar a Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    
+    <!-- Cargamos el CSS directamente con versión para evitar caché -->
+    <link rel="stylesheet" href="styles.css?v=5.0">
 </head>
 <body>
 
@@ -87,6 +90,7 @@
             <label class="title-blue" style="font-size: 1.1em; border-bottom: 2px solid var(--azul); padding-bottom: 5px;">A. Áreas a las que PROPORCIONA información o servicio:</label>
             <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">Selecciona "Sí" en los departamentos que apliquen para detallar la información.</p>
             
+            <!-- Aquí se inyectan las preguntas -->
             <div id="preguntasProporciona"></div>
         </div>
         
@@ -94,6 +98,7 @@
             <label class="title-blue" style="font-size: 1.1em; border-bottom: 2px solid var(--azul); padding-bottom: 5px;">B. Áreas de las que RECIBE información o servicio:</label>
             <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">Selecciona "Sí" en los departamentos que apliquen para detallar la información.</p>
             
+            <!-- Aquí se inyectan las preguntas -->
             <div id="preguntasRecibe"></div>
         </div>
         <!-- FIN NUEVO SISTEMA -->
@@ -159,7 +164,7 @@
     </div>
 </div>
 
-<!-- Archivo maestro de control de versiones -->
-<script src="version.js"></script>
+<!-- Cargamos el JS directamente con versión para evitar caché -->
+<script src="app.js?v=5.0"></script>
 </body>
 </html>
