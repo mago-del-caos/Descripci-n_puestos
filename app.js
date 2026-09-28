@@ -17,14 +17,14 @@ function login() {
         document.getElementById('loginView').classList.add('hidden');
         document.getElementById('adminView').classList.remove('hidden');
         document.getElementById('loginError').style.display = 'none';
-        cargarDatosAdmin(); // Carga los datos del backend
+        cargarDatosAdmin(); 
         window.scrollTo(0, 0);
     } else {
         document.getElementById('loginError').style.display = 'block';
     }
 }
 
-// Cerrar sesión y limpiar
+// Cerrar sesión
 function logout() {
     document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
@@ -36,7 +36,7 @@ function logout() {
     window.scrollTo(0, 0);
 }
 
-// Enviar datos al Worker de Cloudflare
+// Enviar datos al Worker (POST)
 async function enviarDatos(e) {
     e.preventDefault();
     
@@ -64,11 +64,10 @@ async function enviarDatos(e) {
             body: JSON.stringify(payload)
         });
 
-        if (!response.ok) throw new Error("Error en la respuesta del servidor");
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
         const otro = confirm("Ficha guardada exitosamente en la base de datos.\n\n¿Hay otro puesto que debes reportar?");
         if (otro) {
-            // Limpia los campos del puesto, pero mantiene el nombre del empleado
             const empleadoActual = document.getElementById('nombreUsuario').value;
             document.getElementById('fichaForm').reset();
             document.getElementById('nombreUsuario').value = empleadoActual;
@@ -78,28 +77,52 @@ async function enviarDatos(e) {
             logout();
         }
     } catch (error) {
-        alert("Hubo un error al guardar los datos. Revisa tu conexión a internet.");
-        console.error(error);
+        alert("Hubo un error al guardar los datos. Error: " + error.message);
+        console.error("Error completo:", error);
     } finally {
         botonGuardar.disabled = false;
         botonGuardar.textContent = "Guardar Ficha";
     }
 }
 
-// Leer datos del Worker de Cloudflare
+// Leer datos del Worker (GET)
 async function cargarDatosAdmin() {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando datos...</td></tr>';
     
     try {
         const response = await fetch(WORKER_URL);
-        if (!response.ok) throw new Error("Error en la respuesta del servidor");
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
         
         baseDeDatos = await response.json();
         filtrarTabla();
     } catch (error) {
-        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:red;">Error al cargar los datos.</td></tr>';
-        console.error(error);
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Error al cargar los datos: ${error.message}</td></tr>`;
+        console.error("Error completo:", error);
+    }
+}
+
+// Borrar registro (DELETE)
+async function borrarRegistro(id) {
+    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este registro permanentemente?");
+    if (!confirmacion) return;
+
+    try {
+        const response = await fetch(WORKER_URL, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: id })
+        });
+
+        if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
+
+        baseDeDatos = baseDeDatos.filter(item => item.id !== id);
+        filtrarTabla();
+        alert("Registro eliminado correctamente.");
+        cerrarModal();
+    } catch (error) {
+        alert("Error al intentar borrar el registro: " + error.message);
+        console.error("Error completo:", error);
     }
 }
 
@@ -132,15 +155,16 @@ function filtrarTabla() {
             <td>${item.empleado || 'Sin nombre'}</td>
             <td>${item.denominacionPuesto || '-'}</td>
             <td>${item.areaPuesto || '-'}</td>
-            <td>
+            <td style="display: flex; gap: 5px;">
                 <button class="btn-yellow" onclick="verDetalle('${item.id}')">Ver Detalle</button>
+                <button class="btn-logout" style="padding: 12px; margin-top:0;" onclick="borrarRegistro('${item.id}')">Borrar</button>
             </td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-// Mostrar modal con detalles completos
+// Mostrar modal con detalles
 function verDetalle(id) {
     const registro = baseDeDatos.find(r => r.id === id);
     if(!registro) return;
