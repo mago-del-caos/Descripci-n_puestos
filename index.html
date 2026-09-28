@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Esta línea previene bugs de color en celulares Android/Xiaomi -->
     <meta name="color-scheme" content="light">
     <title>Sistema de Registro - Instituto Juventud</title>
     <!-- Librería SheetJS para exportar a Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <!-- Archivo maestro de control de versiones -->
-    <script src="version.js"></script>
 </head>
 <body>
 
@@ -92,7 +89,7 @@
             
             <div id="listaProporciona" class="checkbox-list"></div>
             
-            <!-- Aquí aparecerán los cuadros de texto -->
+            <!-- Aquí aparecerán los cuadros de texto dinámicos -->
             <div id="containerProporciona" class="explicaciones-container"></div>
         </div>
         
@@ -102,7 +99,7 @@
             
             <div id="listaRecibe" class="checkbox-list"></div>
             
-            <!-- Aquí aparecerán los cuadros de texto -->
+            <!-- Aquí aparecerán los cuadros de texto dinámicos -->
             <div id="containerRecibe" class="explicaciones-container"></div>
         </div>
         <!-- FIN DE CHECKBOXES -->
@@ -168,5 +165,7 @@
     </div>
 </div>
 
+<!-- Archivo maestro de control de versiones cargado al final para evitar bloqueos en Android -->
+<script src="version.js"></script>
 </body>
 </html>
