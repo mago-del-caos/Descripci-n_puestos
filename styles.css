@@ -92,21 +92,20 @@ textarea {
     border: 1px solid var(--borde);
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px; /* 16px evita el zoom automático en iPhones */
+    font-size: 16px; /* 16px evita el zoom automático en teléfonos */
 }
 
 /* --- Estilos para Selección Múltiple y Explicaciones Dinámicas --- */
 .multi-select {
-    height: 220px; /* Un poco más alto para celulares */
+    height: 220px; /* Altura para celulares */
     padding: 8px;
     font-size: 16px; 
-    background-color: #ffffff !important; /* Fuerza el fondo blanco en iOS/Android */
+    background-color: #ffffff !important; /* Fuerza el fondo blanco */
     color: #333333 !important; /* Fuerza el texto oscuro */
     border: 1px solid var(--borde);
     width: 100%;
     box-sizing: border-box;
-    -webkit-appearance: none; /* Elimina el estilo nativo rebelde de iOS */
-    appearance: none;
+    /* Se eliminó appearance:none para que Android renderice los textos correctamente */
 }
 .multi-select option {
     padding: 12px 10px; /* Más espacio para tocar cómodamente con el dedo */
