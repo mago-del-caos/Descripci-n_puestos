@@ -44,7 +44,7 @@
     
     <form id="fichaForm" onsubmit="enviarDatos(event)">
         <div class="form-group">
-            <label>Nombre completo empezando por apellido:</label>
+            <label>Nombre (empezando por apellido):</label>
             <input type="text" id="nombreUsuario" required>
         </div>
 
@@ -83,21 +83,27 @@
         
         <h3 class="section-title">3. Flujo de Información</h3>
         
-        <!-- NUEVOS MENÚS DESPLEGABLES MÚLTIPLES -->
+        <!-- MENÚS DESPLEGABLES CON EXPLICACIÓN DINÁMICA -->
         <div class="form-group">
             <label>Áreas o puestos a quien proporciona información o servicio:<br>
             <small style="color: #666; font-weight: normal;">(En PC: Mantén Ctrl o Cmd para seleccionar varios. En Móvil: Toca varios para seleccionarlos)</small></label>
-            <select id="proporcionaInfo" multiple class="multi-select" onchange="verificarOtro('proporcionaInfo', 'proporcionaInfoOtro')" required></select>
-            <input type="text" id="proporcionaInfoOtro" class="hidden custom-input" placeholder="Escribe el nombre del otro puesto...">
+            <!-- Al cambiar la selección, se ejecutará actualizarExplicaciones para generar los cuadros de texto -->
+            <select id="proporcionaInfo" multiple class="multi-select" onchange="actualizarExplicaciones('proporcionaInfo', 'containerProporciona', 'Lo que proporciona a')" required></select>
+            
+            <!-- Aquí aparecerán mágicamente los cuadros de texto para explicar cada opción elegida -->
+            <div id="containerProporciona" class="explicaciones-container"></div>
         </div>
         
         <div class="form-group">
             <label>Áreas o puestos de quien recibe información o servicio:<br>
             <small style="color: #666; font-weight: normal;">(En PC: Mantén Ctrl o Cmd para seleccionar varios. En Móvil: Toca varios para seleccionarlos)</small></label>
-            <select id="recibeInfo" multiple class="multi-select" onchange="verificarOtro('recibeInfo', 'recibeInfoOtro')" required></select>
-            <input type="text" id="recibeInfoOtro" class="hidden custom-input" placeholder="Escribe el nombre del otro puesto...">
+            <!-- Al cambiar la selección, se ejecutará actualizarExplicaciones para generar los cuadros de texto -->
+            <select id="recibeInfo" multiple class="multi-select" onchange="actualizarExplicaciones('recibeInfo', 'containerRecibe', 'Lo que recibe de')" required></select>
+            
+            <!-- Aquí aparecerán mágicamente los cuadros de texto para explicar cada opción elegida -->
+            <div id="containerRecibe" class="explicaciones-container"></div>
         </div>
-        <!-- FIN NUEVOS MENÚS -->
+        <!-- FIN MENÚS -->
 
         <div class="form-group">
             <label>Tareas que hoy se realizan y que no son propias del puesto:</label>
