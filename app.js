@@ -1,8 +1,10 @@
-// URL de tu Worker de Cloudflare
+// =========================================================================
+// URL DE TU WORKER DE CLOUDFLARE CONFIGURADA
+// =========================================================================
 const WORKER_URL = "https://org-juventud-puestos-api.adrian-camelot32.workers.dev/api/registros"; 
 let baseDeDatos = [];
 
-// Opciones extraídas automáticamente del Organigrama (sin nombres de personas)
+// Opciones extraídas automáticamente del Organigrama (incluyendo Prefectura)
 const puestosOrganigrama = [
     "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
     "Direcciones Técnicas", "Preescolar", "Primaria", "Secundaria", "Preparatoria", 
@@ -11,7 +13,7 @@ const puestosOrganigrama = [
     "Área Jurídica", "Comunicación y Marketing", "Admisiones", "Marketing MFRs", 
     "Redes Sociales", "Subdirección Administrativa", "Servicios Generales", 
     "Mantenimiento", "Limpieza", "Jardinería", "Compras", "Recursos Humanos", 
-    "Control Interno", "Relaciones Públicas", "Sistemas", "Cajas", "Otro"
+    "Control Interno", "Relaciones Públicas", "Sistemas", "Cajas", "Prefectura", "Otro"
 ];
 
 // Cargar las opciones cuando inicie la página
@@ -30,35 +32,58 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Función para mostrar/ocultar el input de "Otro"
-function verificarOtro(selectId, inputId) {
+// Generar cuadros de texto dinámicos según lo seleccionado
+function actualizarExplicaciones(selectId, containerId, textoLabel) {
     const select = document.getElementById(selectId);
-    const input = document.getElementById(inputId);
-    const options = Array.from(select.selectedOptions).map(o => o.value);
+    const container = document.getElementById(containerId);
+    const opcionesSeleccionadas = Array.from(select.selectedOptions).map(o => o.value);
     
-    if (options.includes("Otro")) {
-        input.classList.remove('hidden');
-        input.required = true;
-    } else {
-        input.classList.add('hidden');
-        input.required = false;
-        input.value = '';
-    }
+    // Limpiar el contenedor
+    container.innerHTML = ''; 
+    
+    opcionesSeleccionadas.forEach(opcion => {
+        const div = document.createElement('div');
+        div.className = 'explicacion-item';
+        
+        if (opcion === "Otro") {
+            div.innerHTML = `
+                <label class="explicacion-label">Especifique el nombre del "Otro" Área/Puesto:</label>
+                <input type="text" class="otro-nombre-input" placeholder="Ej. Vigilancia, Proveedores externos..." required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <label class="explicacion-label">${textoLabel} (este otro puesto):</label>
+                <textarea class="explicacion-texto" rows="2" required placeholder="Describe la información o servicio..."></textarea>
+            `;
+        } else {
+            div.innerHTML = `
+                <label class="explicacion-label">${textoLabel} ${opcion.toUpperCase()}:</label>
+                <textarea class="explicacion-texto" data-puesto="${opcion}" rows="2" required placeholder="Describe la información o servicio..."></textarea>
+            `;
+        }
+        container.appendChild(div);
+    });
 }
 
-// Función para agrupar todas las opciones seleccionadas y el texto de "Otro"
-function obtenerValoresMultiples(selectId, inputId) {
-    const select = document.getElementById(selectId);
-    const input = document.getElementById(inputId);
-    let values = Array.from(select.selectedOptions).map(o => o.value);
+// Recopilar el puesto + la explicación en un texto ordenado para guardar
+function recopilarExplicaciones(containerId) {
+    const container = document.getElementById(containerId);
+    const items = container.querySelectorAll('.explicacion-item');
+    let resultados = [];
     
-    if (values.includes("Otro")) {
-        values = values.filter(v => v !== "Otro"); // Quitamos la palabra "Otro"
-        if (input.value.trim() !== '') {
-            values.push(input.value.trim()); // Añadimos lo que escribió a mano
+    items.forEach(item => {
+        const inputOtro = item.querySelector('.otro-nombre-input');
+        const textarea = item.querySelector('.explicacion-texto');
+        
+        if (inputOtro) {
+            const nombrePuesto = inputOtro.value.trim();
+            const texto = textarea.value.trim();
+            resultados.push(`• ${nombrePuesto} (Otro): ${texto}`);
+        } else {
+            const nombrePuesto = textarea.getAttribute('data-puesto');
+            const texto = textarea.value.trim();
+            resultados.push(`• ${nombrePuesto}: ${texto}`);
         }
-    }
-    return values.join(", "); // Lo unimos con comas
+    });
+    
+    return resultados.join('\n');
 }
 
 // Sistema de Login
@@ -94,7 +119,7 @@ function logout() {
     window.scrollTo(0, 0);
 }
 
-// Enviar datos al Worker
+// Enviar datos al Worker (POST)
 async function enviarDatos(e) {
     e.preventDefault();
     
@@ -110,9 +135,9 @@ async function enviarDatos(e) {
         objetivo: document.getElementById('objetivo').value,
         resultados: document.getElementById('resultados').value,
         funciones: document.getElementById('funciones').value,
-        // Usamos la nueva función para recopilar las respuestas múltiples
-        proporcionaInfo: obtenerValoresMultiples('proporcionaInfo', 'proporcionaInfoOtro'),
-        recibeInfo: obtenerValoresMultiples('recibeInfo', 'recibeInfoOtro'),
+        // Usamos la nueva función para agrupar todas las explicaciones
+        proporcionaInfo: recopilarExplicaciones('containerProporciona'),
+        recibeInfo: recopilarExplicaciones('containerRecibe'),
         tareasNoPropias: document.getElementById('tareasNoPropias').value
     };
 
@@ -130,9 +155,9 @@ async function enviarDatos(e) {
             const empleadoActual = document.getElementById('nombreUsuario').value;
             document.getElementById('fichaForm').reset();
             document.getElementById('nombreUsuario').value = empleadoActual;
-            // Asegurarnos de ocultar los inputs "Otro" al resetear
-            document.getElementById('proporcionaInfoOtro').classList.add('hidden');
-            document.getElementById('recibeInfoOtro').classList.add('hidden');
+            // Limpiar los contenedores dinámicos generados
+            document.getElementById('containerProporciona').innerHTML = '';
+            document.getElementById('containerRecibe').innerHTML = '';
             window.scrollTo(0, 0);
         } else {
             alert("Gracias por completar tus registros.");
@@ -140,14 +165,14 @@ async function enviarDatos(e) {
         }
     } catch (error) {
         alert("Hubo un error al guardar los datos. Error: " + error.message);
-        console.error(error);
+        console.error("Error completo:", error);
     } finally {
         botonGuardar.disabled = false;
         botonGuardar.textContent = "Guardar Ficha";
     }
 }
 
-// Leer datos para el administrador
+// Leer datos del Worker (GET)
 async function cargarDatosAdmin() {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando datos...</td></tr>';
@@ -160,7 +185,7 @@ async function cargarDatosAdmin() {
         filtrarTabla();
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Error al cargar los datos: ${error.message}</td></tr>`;
-        console.error(error);
+        console.error("Error completo:", error);
     }
 }
 
@@ -184,7 +209,7 @@ async function borrarRegistro(id) {
         cerrarModal();
     } catch (error) {
         alert("Error al intentar borrar el registro: " + error.message);
-        console.error(error);
+        console.error("Error completo:", error);
     }
 }
 
@@ -226,7 +251,7 @@ function filtrarTabla() {
     });
 }
 
-// Mostrar modal con detalles
+// Mostrar modal con detalles (Usa CSS pre-wrap para respetar los saltos de línea)
 function verDetalle(id) {
     const registro = baseDeDatos.find(r => r.id === id);
     if(!registro) return;
@@ -238,13 +263,13 @@ function verDetalle(id) {
         <div class="detail-item"><strong>Área:</strong> ${registro.areaPuesto}</div>
         <div class="detail-item"><strong>Reporta a:</strong> ${registro.reportaA}</div>
         <hr>
-        <div class="detail-item"><strong>Objetivo:</strong> ${registro.objetivo}</div>
-        <div class="detail-item"><strong>Resultados:</strong> ${registro.resultados}</div>
-        <div class="detail-item"><strong>Funciones:</strong> ${registro.funciones}</div>
+        <div class="detail-item"><strong>Objetivo:</strong><br><span style="white-space: pre-wrap;">${registro.objetivo}</span></div>
+        <div class="detail-item"><strong>Resultados:</strong><br><span style="white-space: pre-wrap;">${registro.resultados}</span></div>
+        <div class="detail-item"><strong>Funciones:</strong><br><span style="white-space: pre-wrap;">${registro.funciones}</span></div>
         <hr>
-        <div class="detail-item"><strong>Proporciona Info a:</strong> ${registro.proporcionaInfo}</div>
-        <div class="detail-item"><strong>Recibe Info de:</strong> ${registro.recibeInfo}</div>
-        <div class="detail-item"><strong>Tareas NO propias:</strong> ${registro.tareasNoPropias}</div>
+        <div class="detail-item"><strong>Proporciona Info a:</strong><br><span style="white-space: pre-wrap;">${registro.proporcionaInfo || "N/A"}</span></div>
+        <div class="detail-item"><strong>Recibe Info de:</strong><br><span style="white-space: pre-wrap;">${registro.recibeInfo || "N/A"}</span></div>
+        <div class="detail-item"><strong>Tareas NO propias:</strong><br><span style="white-space: pre-wrap;">${registro.tareasNoPropias}</span></div>
         <div class="detail-item" style="font-size: 0.8em; color: gray; margin-top: 15px;">
             <strong>Fecha Registro:</strong> ${new Date(registro.fechaRegistro).toLocaleString()}
         </div>
