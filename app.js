@@ -10,10 +10,13 @@ const departamentos = [
     "Acad. Pastoral", "Coordinación Francés", "Servicios Escolares", "Otro"
 ];
 
-// Iniciar y dibujar las preguntas cuando cargue la página
-document.addEventListener("DOMContentLoaded", () => {
+// Función principal para dibujar las preguntas
+function inicializarPreguntas() {
     const containerProp = document.getElementById('preguntasProporciona');
     const containerRec = document.getElementById('preguntasRecibe');
+    
+    // Seguridad: Si ya se dibujaron o no existen los contenedores, detener.
+    if (!containerProp || !containerRec || containerProp.innerHTML.trim() !== '') return;
     
     departamentos.forEach((depto, index) => {
         // Generar pregunta para PROPORCIONA
@@ -22,7 +25,16 @@ document.addEventListener("DOMContentLoaded", () => {
         // Generar pregunta para RECIBE
         containerRec.innerHTML += crearHTMLPregunta('rec', index, depto, 'Lo que recibe de');
     });
-});
+}
+
+// ARRANQUE SEGURO A PRUEBA DE CARGA DINÁMICA
+if (document.readyState === "loading") {
+    // Si la página aún está cargando, esperar a que termine
+    document.addEventListener("DOMContentLoaded", inicializarPreguntas);
+} else {
+    // Si la página ya cargó (por culpa del version.js), ejecutar inmediatamente
+    inicializarPreguntas();
+}
 
 // Plantilla HTML para generar cada bloque de pregunta Sí/No
 function crearHTMLPregunta(prefijo, index, depto, labelExplicacion) {
@@ -181,7 +193,7 @@ async function enviarDatos(e) {
             document.getElementById('fichaForm').reset();
             document.getElementById('nombreUsuario').value = empleadoActual;
             
-            // Ocultar todas las cajas al resetear el formulario
+            // Ocultar todas las cajas al resetear el formulario y volver los radios a "No"
             document.querySelectorAll('.explicacion-caja').forEach(caja => {
                 caja.classList.add('hidden');
                 const ta = caja.querySelector('textarea');
