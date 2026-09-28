@@ -1,85 +1,102 @@
+// URL de tu Worker de Cloudflare
 const WORKER_URL = "https://org-juventud-puestos-api.adrian-camelot32.workers.dev/api/registros"; 
 let baseDeDatos = [];
 
-const puestosOrganigrama = [
-    "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
-    "Dirección Técnica Preescolar", "Dirección Técnica Primaria", "Dirección Técnicas Secundaria", "Dirección técnica Preparatoria", 
-    "Coordinaciones", "Coordinación Inglés", "Coordinación Psicología", "Coordinación Deportes", "Extraescolares", 
-    "Acad. Pastoral", "Coordinación Francés", "Servicios Escolares", "Innovación Educativa", 
-    "Área Jurídica", "Comunicación y Marketing", "Admisiones", "Marketing MFRs", 
-    "Redes Sociales", "Subdirección Administrativa", "Servicios Generales", 
-    "Mantenimiento", "Limpieza", "Jardinería", "Compras", "Recursos Humanos", 
-    "Control Interno", "Relaciones Públicas", "Sistemas", "Cajas", "Prefectura", "Otro"
+// Nueva lista oficial de departamentos solicitada
+const departamentos = [
+    "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
+    "Dirección Técnica Preescolar", "Dirección Técnica Primaria", "Dirección Técnicas Secundaria", "Dirección técnica Preparatoria", 
+    "Coordinaciones", "Coordinación Inglés", "Coordinación Psicología", "Coordinación Deportes", "Extraescolares", 
+    "Acad. Pastoral", "Coordinación Francés", "Servicios Escolares", "Otro"
 ];
 
-// Cargar las opciones (checkboxes) cuando inicie la página
+// Iniciar y dibujar las preguntas cuando cargue la página
 document.addEventListener("DOMContentLoaded", () => {
-    const listaProporciona = document.getElementById('listaProporciona');
-    const listaRecibe = document.getElementById('listaRecibe');
+    const containerProp = document.getElementById('preguntasProporciona');
+    const containerRec = document.getElementById('preguntasRecibe');
     
-    puestosOrganigrama.forEach(puesto => {
-        // Crear casilla para "Proporciona"
-        const lbl1 = document.createElement('label');
-        lbl1.className = 'checkbox-item';
-        lbl1.innerHTML = `<input type="checkbox" value="${puesto}" onchange="actualizarExplicaciones('listaProporciona', 'containerProporciona', 'Lo que proporciona a')"> <span>${puesto}</span>`;
-        listaProporciona.appendChild(lbl1);
-
-        // Crear casilla para "Recibe"
-        const lbl2 = document.createElement('label');
-        lbl2.className = 'checkbox-item';
-        lbl2.innerHTML = `<input type="checkbox" value="${puesto}" onchange="actualizarExplicaciones('listaRecibe', 'containerRecibe', 'Lo que recibe de')"> <span>${puesto}</span>`;
-        listaRecibe.appendChild(lbl2);
+    departamentos.forEach((depto, index) => {
+        // Generar pregunta para PROPORCIONA
+        containerProp.innerHTML += crearHTMLPregunta('prop', index, depto, 'Lo que proporciona a');
+        
+        // Generar pregunta para RECIBE
+        containerRec.innerHTML += crearHTMLPregunta('rec', index, depto, 'Lo que recibe de');
     });
 });
 
-// Generar cuadros de texto dinámicos leyendo las casillas marcadas
-function actualizarExplicaciones(listaId, containerId, textoLabel) {
-    const lista = document.getElementById(listaId);
-    const container = document.getElementById(containerId);
+// Plantilla HTML para generar cada bloque de pregunta Sí/No
+function crearHTMLPregunta(prefijo, index, depto, labelExplicacion) {
+    let inputOtroHTML = '';
     
-    // Buscar qué casillas están marcadas en esta lista
-    const checkboxesMarcados = lista.querySelectorAll('input[type="checkbox"]:checked');
-    const opcionesSeleccionadas = Array.from(checkboxesMarcados).map(cb => cb.value);
-    
-    container.innerHTML = ''; // Limpiar el contenedor
-    
-    opcionesSeleccionadas.forEach(opcion => {
-        const div = document.createElement('div');
-        div.className = 'explicacion-item';
-        
-        if (opcion === "Otro") {
-            div.innerHTML = `
-                <label class="explicacion-label">Especifique el nombre del "Otro" Área/Puesto:</label>
-                <input type="text" class="otro-nombre-input" placeholder="Ej. Vigilancia, Proveedores..." required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                <label class="explicacion-label">${textoLabel} (este otro puesto):</label>
-                <textarea class="explicacion-texto" rows="2" required placeholder="Describe la información o servicio..."></textarea>
-            `;
-        } else {
-            div.innerHTML = `
-                <label class="explicacion-label">${textoLabel} ${opcion.toUpperCase()}:</label>
-                <textarea class="explicacion-texto" data-puesto="${opcion}" rows="2" required placeholder="Describe la información o servicio..."></textarea>
-            `;
-        }
-        container.appendChild(div);
-    });
+    if (depto === "Otro") {
+        inputOtroHTML = `
+            <label class="explicacion-label" style="margin-top:5px;">Especifique el nombre del "Otro" Área/Puesto:</label>
+            <input type="text" class="otro-nombre-input" placeholder="Ej. Vigilancia, Proveedores..." style="margin-bottom: 12px; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+        `;
+    }
+
+    return `
+    <div class="pregunta-item">
+        <div class="pregunta-header">
+            <span class="pregunta-texto">${depto === 'Otro' ? '¿Aplica para <strong>Otro</strong> puesto?' : `¿Aplica para <strong>${depto}</strong>?`}</span>
+            <div class="radio-group">
+                <label class="radio-label">
+                    <input type="radio" name="${prefijo}_${index}" value="no" checked onchange="toggleExplicacion('caja_${prefijo}_${index}', false)"> No
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="${prefijo}_${index}" value="si" onchange="toggleExplicacion('caja_${prefijo}_${index}', true)"> Sí
+                </label>
+            </div>
+        </div>
+        <div id="caja_${prefijo}_${index}" class="explicacion-caja hidden">
+            ${inputOtroHTML}
+            <label class="explicacion-label">${labelExplicacion} ${depto !== 'Otro' ? depto : 'este puesto'}:</label>
+            <textarea class="explicacion-texto" rows="2" placeholder="Describe la información o servicio..."></textarea>
+        </div>
+    </div>`;
 }
 
-// Recopilar el puesto + la explicación
-function recopilarExplicaciones(containerId) {
-    const container = document.getElementById(containerId);
-    const items = container.querySelectorAll('.explicacion-item');
+// Mostrar u ocultar la caja de texto dependiendo de si toca "Sí" o "No"
+function toggleExplicacion(cajaId, mostrar) {
+    const caja = document.getElementById(cajaId);
+    const textarea = caja.querySelector('.explicacion-texto');
+    const inputOtro = caja.querySelector('.otro-nombre-input');
+
+    if (mostrar) {
+        caja.classList.remove('hidden');
+        textarea.required = true;
+        if (inputOtro) inputOtro.required = true;
+    } else {
+        caja.classList.add('hidden');
+        textarea.required = false;
+        textarea.value = '';
+        if (inputOtro) {
+            inputOtro.required = false;
+            inputOtro.value = '';
+        }
+    }
+}
+
+// Leer todas las respuestas que dijeron "Sí" y juntarlas en un texto
+function recopilarRespuestas(prefijo, listaDeptos) {
     let resultados = [];
     
-    items.forEach(item => {
-        const inputOtro = item.querySelector('.otro-nombre-input');
-        const textarea = item.querySelector('.explicacion-texto');
-        
-        if (inputOtro) {
-            resultados.push(`• ${inputOtro.value.trim()} (Otro): ${textarea.value.trim()}`);
-        } else {
-            resultados.push(`• ${textarea.getAttribute('data-puesto')}: ${textarea.value.trim()}`);
+    listaDeptos.forEach((depto, index) => {
+        const radioSi = document.querySelector(`input[name="${prefijo}_${index}"][value="si"]`);
+        if (radioSi && radioSi.checked) {
+            const caja = document.getElementById(`caja_${prefijo}_${index}`);
+            const textarea = caja.querySelector('.explicacion-texto');
+            const texto = textarea.value.trim();
+
+            if (depto === "Otro") {
+                const inputOtro = caja.querySelector('.otro-nombre-input');
+                resultados.push(`• ${inputOtro.value.trim()} (Otro): ${texto}`);
+            } else {
+                resultados.push(`• ${depto}: ${texto}`);
+            }
         }
     });
+    
     return resultados.join('\n');
 }
 
@@ -119,13 +136,16 @@ function logout() {
 async function enviarDatos(e) {
     e.preventDefault();
 
-    // Validar que se haya seleccionado al menos una casilla
-    if (document.querySelectorAll('#listaProporciona input:checked').length === 0) {
-        alert("Por favor, selecciona al menos un área a la que proporciona información.");
+    const proporcionaTxt = recopilarRespuestas('prop', departamentos);
+    const recibeTxt = recopilarRespuestas('rec', departamentos);
+
+    // Validar que al menos haya un "Sí"
+    if (proporcionaTxt === "") {
+        alert("Por favor, selecciona 'Sí' en al menos un área a la que PROPORCIONA información.");
         return;
     }
-    if (document.querySelectorAll('#listaRecibe input:checked').length === 0) {
-        alert("Por favor, selecciona al menos un área de la que recibe información.");
+    if (recibeTxt === "") {
+        alert("Por favor, selecciona 'Sí' en al menos un área de la que RECIBE información.");
         return;
     }
     
@@ -141,8 +161,8 @@ async function enviarDatos(e) {
         objetivo: document.getElementById('objetivo').value,
         resultados: document.getElementById('resultados').value,
         funciones: document.getElementById('funciones').value,
-        proporcionaInfo: recopilarExplicaciones('containerProporciona'),
-        recibeInfo: recopilarExplicaciones('containerRecibe'),
+        proporcionaInfo: proporcionaTxt,
+        recibeInfo: recibeTxt,
         tareasNoPropias: document.getElementById('tareasNoPropias').value
     };
 
@@ -161,10 +181,15 @@ async function enviarDatos(e) {
             document.getElementById('fichaForm').reset();
             document.getElementById('nombreUsuario').value = empleadoActual;
             
-            // Desmarcar todas las casillas y limpiar contenedores
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            document.getElementById('containerProporciona').innerHTML = '';
-            document.getElementById('containerRecibe').innerHTML = '';
+            // Ocultar todas las cajas al resetear el formulario
+            document.querySelectorAll('.explicacion-caja').forEach(caja => {
+                caja.classList.add('hidden');
+                const ta = caja.querySelector('textarea');
+                if (ta) ta.required = false;
+                const inp = caja.querySelector('input[type="text"]');
+                if (inp) inp.required = false;
+            });
+
             window.scrollTo(0, 0);
         } else {
             alert("Gracias por completar tus registros.");
