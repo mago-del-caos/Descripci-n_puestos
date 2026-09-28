@@ -88,52 +88,74 @@ textarea {
     font-size: 16px; 
 }
 
-/* --- LISTAS DE CHECKBOXES (NUEVO) --- */
-.checkbox-list {
-    height: 250px;
-    overflow-y: auto;
+/* --- NUEVOS ESTILOS PARA PREGUNTAS SÍ/NO --- */
+.pregunta-item {
+    background-color: var(--blanco);
     border: 1px solid var(--borde);
-    border-radius: 4px;
-    padding: 5px;
-    background-color: #ffffff;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
 }
-.checkbox-item {
+
+.pregunta-item:hover {
+    border-color: var(--azul);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.pregunta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.pregunta-texto {
+    font-weight: normal;
+    color: var(--texto);
+    flex: 1;
+    min-width: 200px;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.radio-label {
     display: flex;
     align-items: center;
-    padding: 12px 10px;
-    margin-bottom: 2px;
-    border-bottom: 1px solid #eeeeee;
     cursor: pointer;
-    font-weight: normal; 
-    color: #333333;
-    font-size: 16px;
-}
-.checkbox-item:hover {
+    font-weight: bold;
+    color: var(--texto);
+    padding: 5px 10px;
     background-color: #f1f1f1;
+    border-radius: 4px;
+    transition: background-color 0.2s;
 }
-.checkbox-item input[type="checkbox"] {
-    margin-right: 15px;
-    width: 22px;
-    height: 22px;
+
+.radio-label:active {
+    background-color: #e0e0e0;
+}
+
+.radio-label input[type="radio"] {
+    margin-right: 8px;
+    width: 20px;
+    height: 20px;
     cursor: pointer;
 }
 
-/* Cajas de explicaciones */
-.explicaciones-container {
+.explicacion-caja {
     margin-top: 15px;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-left: 4px solid var(--amarillo);
-    border-radius: 4px;
+    padding-top: 15px;
+    border-top: 1px dashed var(--borde);
 }
-.explicaciones-container:empty { display: none; }
-.explicacion-item { margin-bottom: 15px; }
-.explicacion-label {
+
+.explicacion-caja label {
     color: var(--verde);
     font-size: 0.9em;
-    margin-bottom: 5px;
-    display: block;
-    font-weight: bold;
 }
 
 /* --- Buttons --- */
@@ -192,4 +214,6 @@ tr:nth-child(even) { background-color: #f9f9f9; }
     .filters { flex-direction: column; align-items: stretch; }
     .filter-item, .filter-btn { width: 100%; margin-bottom: 10px; }
     .btn-blue, .btn-green { width: 100%; }
+    /* Adapta las preguntas en celular para que los botones de sí/no bajen de línea si no caben */
+    .pregunta-header { flex-direction: column; align-items: flex-start; }
 }
