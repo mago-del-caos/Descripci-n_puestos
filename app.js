@@ -4,10 +4,14 @@ let baseDeDatos = [];
 
 // Nueva lista oficial de departamentos solicitada
 const departamentos = [
-    "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
+   "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
     "Dirección Técnica Preescolar", "Dirección Técnica Primaria", "Dirección Técnicas Secundaria", "Dirección técnica Preparatoria", 
     "Coordinaciones", "Coordinación Inglés", "Coordinación Psicología", "Coordinación Deportes", "Extraescolares", 
-    "Acad. Pastoral", "Coordinación Francés", "Servicios Escolares", "Otro"
+    "Acad. Pastoral", "Coordinación Francés", "Servicios Escolares", "Innovación Educativa", 
+    "Área Jurídica", "Comunicación y Marketing", "Admisiones", "Marketing MFRs", 
+    "Redes Sociales", "Subdirección Administrativa", "Servicios Generales", 
+    "Mantenimiento", "Limpieza", "Jardinería", "Compras", "Recursos Humanos", 
+    "Control Interno", "Relaciones Públicas", "Sistemas", "Cajas", "Prefectura", "Otro"
 ];
 
 // Función principal para dibujar las preguntas
