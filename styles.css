@@ -97,14 +97,24 @@ textarea {
 
 /* --- Estilos para Selección Múltiple y Explicaciones Dinámicas --- */
 .multi-select {
-    height: 180px; /* Altura suficiente para ver varias opciones */
-    padding: 5px;
-    font-size: 15px;
+    height: 220px; /* Un poco más alto para celulares */
+    padding: 8px;
+    font-size: 16px; 
+    background-color: #ffffff !important; /* Fuerza el fondo blanco en iOS/Android */
+    color: #333333 !important; /* Fuerza el texto oscuro */
+    border: 1px solid var(--borde);
+    width: 100%;
+    box-sizing: border-box;
+    -webkit-appearance: none; /* Elimina el estilo nativo rebelde de iOS */
+    appearance: none;
 }
 .multi-select option {
-    padding: 8px;
+    padding: 12px 10px; /* Más espacio para tocar cómodamente con el dedo */
     margin-bottom: 2px;
     border-radius: 4px;
+    background-color: #ffffff;
+    color: #333333;
+    border-bottom: 1px solid #eeeeee; /* Línea separadora tenue para celulares */
 }
 .multi-select option:checked {
     background-color: var(--azul) !important;
@@ -119,7 +129,7 @@ textarea {
     border-radius: 4px;
 }
 .explicaciones-container:empty {
-    display: none; /* Oculta la caja si no hay explicaciones generadas */
+    display: none;
 }
 .explicacion-item {
     margin-bottom: 15px;
@@ -233,7 +243,7 @@ tr:nth-child(even) { background-color: #f9f9f9; }
 .modal-footer { margin-top: 20px; text-align: center; }
 
 /* =========================================================================
-   MEDIA QUERIES (RESPONSIVE DESIGN PARA MÓVILES - iPHONE)
+   MEDIA QUERIES (RESPONSIVE DESIGN PARA MÓVILES - iPHONE/ANDROID)
    ========================================================================= */
 @media screen and (max-width: 768px) {
     .container {
