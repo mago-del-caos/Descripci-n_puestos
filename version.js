@@ -2,7 +2,7 @@
 // CONTROL DE VERSIONES DEL SISTEMA
 // ==========================================
 // Cambia este número cada vez que modifiques app.js o styles.css
-const VERSION = "1.0.0"; 
+const VERSION = "1.0.1"; 
 
 // 1. Inyectar CSS dinámicamente con la versión actual
 const cssLink = document.createElement("link");
