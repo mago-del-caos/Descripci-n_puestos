@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Esta línea previene bugs de color en celulares Android/Xiaomi -->
+    <meta name="color-scheme" content="light">
     <title>Sistema de Registro - Instituto Juventud</title>
     <!-- Librería SheetJS para exportar a Excel -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    
     <!-- Archivo maestro de control de versiones -->
     <script src="version.js"></script>
 </head>
@@ -36,7 +37,7 @@
     <p id="loginError" class="error-msg">Credenciales incorrectas.</p>
 </div>
 
-<!-- Pantalla de Formulario (Usuario: juventud) -->
+<!-- Pantalla de Formulario -->
 <div class="container hidden" id="formView">
     <div class="header-actions">
         <h2 class="title-green">Registro de Funciones</h2>
@@ -84,27 +85,27 @@
         
         <h3 class="section-title">3. Flujo de Información</h3>
         
-        <!-- MENÚS DESPLEGABLES CON EXPLICACIÓN DINÁMICA -->
+        <!-- LISTA DE CHECKBOXES (A prueba de celulares) -->
         <div class="form-group">
             <label>Áreas o puestos a quien proporciona información o servicio:<br>
-            <small style="color: #666; font-weight: normal;">(En PC: Mantén Ctrl o Cmd para seleccionar varios. En Móvil: Toca varios para seleccionarlos)</small></label>
-            <!-- Al cambiar la selección, se ejecutará actualizarExplicaciones para generar los cuadros de texto -->
-            <select id="proporcionaInfo" multiple class="multi-select" onchange="actualizarExplicaciones('proporcionaInfo', 'containerProporciona', 'Lo que proporciona a')" required></select>
+            <small style="color: #666; font-weight: normal;">(Selecciona todas las opciones que apliquen tocando las casillas)</small></label>
             
-            <!-- Aquí aparecerán mágicamente los cuadros de texto para explicar cada opción elegida -->
+            <div id="listaProporciona" class="checkbox-list"></div>
+            
+            <!-- Aquí aparecerán los cuadros de texto -->
             <div id="containerProporciona" class="explicaciones-container"></div>
         </div>
         
         <div class="form-group">
             <label>Áreas o puestos de quien recibe información o servicio:<br>
-            <small style="color: #666; font-weight: normal;">(En PC: Mantén Ctrl o Cmd para seleccionar varios. En Móvil: Toca varios para seleccionarlos)</small></label>
-            <!-- Al cambiar la selección, se ejecutará actualizarExplicaciones para generar los cuadros de texto -->
-            <select id="recibeInfo" multiple class="multi-select" onchange="actualizarExplicaciones('recibeInfo', 'containerRecibe', 'Lo que recibe de')" required></select>
+            <small style="color: #666; font-weight: normal;">(Selecciona todas las opciones que apliquen tocando las casillas)</small></label>
             
-            <!-- Aquí aparecerán mágicamente los cuadros de texto para explicar cada opción elegida -->
+            <div id="listaRecibe" class="checkbox-list"></div>
+            
+            <!-- Aquí aparecerán los cuadros de texto -->
             <div id="containerRecibe" class="explicaciones-container"></div>
         </div>
-        <!-- FIN MENÚS -->
+        <!-- FIN DE CHECKBOXES -->
 
         <div class="form-group">
             <label>Tareas que hoy se realizan y que no son propias del puesto:</label>
@@ -115,7 +116,7 @@
     </form>
 </div>
 
-<!-- Pantalla de Administrador (Usuario: admin) -->
+<!-- Pantalla de Administrador -->
 <div class="container hidden" id="adminView">
     <div class="header-actions">
         <h2 class="title-blue">Panel de Administración</h2>
@@ -151,9 +152,7 @@
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                <!-- Los registros se cargan aquí -->
-            </tbody>
+            <tbody id="tableBody"></tbody>
         </table>
     </div>
 </div>
