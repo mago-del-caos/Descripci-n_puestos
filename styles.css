@@ -95,7 +95,7 @@ textarea {
     font-size: 16px; /* 16px evita el zoom automático en iPhones */
 }
 
-/* --- Estilos para Selección Múltiple --- */
+/* --- Estilos para Selección Múltiple y Explicaciones Dinámicas --- */
 .multi-select {
     height: 180px; /* Altura suficiente para ver varias opciones */
     padding: 5px;
@@ -110,9 +110,26 @@ textarea {
     background-color: var(--azul) !important;
     color: var(--blanco) !important;
 }
-.custom-input {
-    margin-top: 10px;
-    border-left: 4px solid var(--amarillo) !important;
+
+.explicaciones-container {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 4px solid var(--amarillo);
+    border-radius: 4px;
+}
+.explicaciones-container:empty {
+    display: none; /* Oculta la caja si no hay explicaciones generadas */
+}
+.explicacion-item {
+    margin-bottom: 15px;
+}
+.explicacion-label {
+    color: var(--verde);
+    font-size: 0.9em;
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
 }
 
 /* --- Buttons --- */
