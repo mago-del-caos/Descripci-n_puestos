@@ -1,7 +1,65 @@
 // URL de tu Worker de Cloudflare
 const WORKER_URL = "https://org-juventud-puestos-api.adrian-camelot32.workers.dev/api/registros"; 
-    
 let baseDeDatos = [];
+
+// Opciones extraídas automáticamente del Organigrama (sin nombres de personas)
+const puestosOrganigrama = [
+    "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
+    "Direcciones Técnicas", "Preescolar", "Primaria", "Secundaria", "Preparatoria", 
+    "Coordinaciones", "Inglés", "Psicología", "Deportes", "Extraescolares", 
+    "Acad. Pastoral", "Francés", "Servicios Escolares", "Innovación Educativa", 
+    "Área Jurídica", "Comunicación y Marketing", "Admisiones", "Marketing MFRs", 
+    "Redes Sociales", "Subdirección Administrativa", "Servicios Generales", 
+    "Mantenimiento", "Limpieza", "Jardinería", "Compras", "Recursos Humanos", 
+    "Control Interno", "Relaciones Públicas", "Sistemas", "Cajas", "Otro"
+];
+
+// Cargar las opciones cuando inicie la página
+document.addEventListener("DOMContentLoaded", () => {
+    const selectProporciona = document.getElementById('proporcionaInfo');
+    const selectRecibe = document.getElementById('recibeInfo');
+    
+    puestosOrganigrama.forEach(puesto => {
+        const opt1 = document.createElement('option');
+        opt1.value = puesto; opt1.textContent = puesto;
+        selectProporciona.appendChild(opt1);
+
+        const opt2 = document.createElement('option');
+        opt2.value = puesto; opt2.textContent = puesto;
+        selectRecibe.appendChild(opt2);
+    });
+});
+
+// Función para mostrar/ocultar el input de "Otro"
+function verificarOtro(selectId, inputId) {
+    const select = document.getElementById(selectId);
+    const input = document.getElementById(inputId);
+    const options = Array.from(select.selectedOptions).map(o => o.value);
+    
+    if (options.includes("Otro")) {
+        input.classList.remove('hidden');
+        input.required = true;
+    } else {
+        input.classList.add('hidden');
+        input.required = false;
+        input.value = '';
+    }
+}
+
+// Función para agrupar todas las opciones seleccionadas y el texto de "Otro"
+function obtenerValoresMultiples(selectId, inputId) {
+    const select = document.getElementById(selectId);
+    const input = document.getElementById(inputId);
+    let values = Array.from(select.selectedOptions).map(o => o.value);
+    
+    if (values.includes("Otro")) {
+        values = values.filter(v => v !== "Otro"); // Quitamos la palabra "Otro"
+        if (input.value.trim() !== '') {
+            values.push(input.value.trim()); // Añadimos lo que escribió a mano
+        }
+    }
+    return values.join(", "); // Lo unimos con comas
+}
 
 // Sistema de Login
 function login() {
@@ -36,7 +94,7 @@ function logout() {
     window.scrollTo(0, 0);
 }
 
-// Enviar datos al Worker (POST)
+// Enviar datos al Worker
 async function enviarDatos(e) {
     e.preventDefault();
     
@@ -52,8 +110,9 @@ async function enviarDatos(e) {
         objetivo: document.getElementById('objetivo').value,
         resultados: document.getElementById('resultados').value,
         funciones: document.getElementById('funciones').value,
-        proporcionaInfo: document.getElementById('proporcionaInfo').value,
-        recibeInfo: document.getElementById('recibeInfo').value,
+        // Usamos la nueva función para recopilar las respuestas múltiples
+        proporcionaInfo: obtenerValoresMultiples('proporcionaInfo', 'proporcionaInfoOtro'),
+        recibeInfo: obtenerValoresMultiples('recibeInfo', 'recibeInfoOtro'),
         tareasNoPropias: document.getElementById('tareasNoPropias').value
     };
 
@@ -71,6 +130,9 @@ async function enviarDatos(e) {
             const empleadoActual = document.getElementById('nombreUsuario').value;
             document.getElementById('fichaForm').reset();
             document.getElementById('nombreUsuario').value = empleadoActual;
+            // Asegurarnos de ocultar los inputs "Otro" al resetear
+            document.getElementById('proporcionaInfoOtro').classList.add('hidden');
+            document.getElementById('recibeInfoOtro').classList.add('hidden');
             window.scrollTo(0, 0);
         } else {
             alert("Gracias por completar tus registros.");
@@ -78,14 +140,14 @@ async function enviarDatos(e) {
         }
     } catch (error) {
         alert("Hubo un error al guardar los datos. Error: " + error.message);
-        console.error("Error completo:", error);
+        console.error(error);
     } finally {
         botonGuardar.disabled = false;
         botonGuardar.textContent = "Guardar Ficha";
     }
 }
 
-// Leer datos del Worker (GET)
+// Leer datos para el administrador
 async function cargarDatosAdmin() {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando datos...</td></tr>';
@@ -98,11 +160,11 @@ async function cargarDatosAdmin() {
         filtrarTabla();
     } catch (error) {
         tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Error al cargar los datos: ${error.message}</td></tr>`;
-        console.error("Error completo:", error);
+        console.error(error);
     }
 }
 
-// Borrar registro (DELETE)
+// Borrar registro permanentemente
 async function borrarRegistro(id) {
     const confirmacion = confirm("¿Estás seguro de que deseas eliminar este registro permanentemente?");
     if (!confirmacion) return;
@@ -122,7 +184,7 @@ async function borrarRegistro(id) {
         cerrarModal();
     } catch (error) {
         alert("Error al intentar borrar el registro: " + error.message);
-        console.error("Error completo:", error);
+        console.error(error);
     }
 }
 
