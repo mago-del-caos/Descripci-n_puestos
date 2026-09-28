@@ -1,3 +1,4 @@
+/* Variables de color institucionales */
 :root {
     --azul: #004b93;
     --verde: #28a745;
@@ -25,10 +26,10 @@ body {
 
 .banner-img {
     width: 100%;
-    max-width: 1000px;
-    height: auto;
+    max-width: 1000px; /* Evita que crezca demasiado en monitores grandes */
+    height: auto;      /* Mantiene la proporción original sin recortar */
     display: block;
-    margin: 0 auto;
+    margin: 0 auto;    /* Centra la imagen en el contenedor */
 }
 
 /* --- Header Styles --- */
@@ -55,7 +56,9 @@ header h1 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 /* --- Typography --- */
 .title-blue { color: var(--azul); margin-top: 0; }
@@ -69,7 +72,9 @@ header h1 {
 .error-msg { color: red; display: none; margin-top: 10px; font-weight: bold; text-align: center;}
 
 /* --- Forms --- */
-.form-group { margin-bottom: 15px; }
+.form-group {
+    margin-bottom: 15px;
+}
 
 label {
     display: block;
@@ -87,7 +92,27 @@ textarea {
     border: 1px solid var(--borde);
     border-radius: 4px;
     box-sizing: border-box;
-    font-size: 16px;
+    font-size: 16px; /* 16px evita el zoom automático en iPhones */
+}
+
+/* --- Estilos para Selección Múltiple --- */
+.multi-select {
+    height: 180px; /* Altura suficiente para ver varias opciones */
+    padding: 5px;
+    font-size: 15px;
+}
+.multi-select option {
+    padding: 8px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+}
+.multi-select option:checked {
+    background-color: var(--azul) !important;
+    color: var(--blanco) !important;
+}
+.custom-input {
+    margin-top: 10px;
+    border-left: 4px solid var(--amarillo) !important;
 }
 
 /* --- Buttons --- */
@@ -143,7 +168,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
-    min-width: 600px;
+    min-width: 600px; /* Asegura que la tabla no colapse en móviles */
 }
 
 th, td {
@@ -190,13 +215,42 @@ tr:nth-child(even) { background-color: #f9f9f9; }
 .detail-item strong { color: var(--azul); }
 .modal-footer { margin-top: 20px; text-align: center; }
 
-/* Responsive para Móviles */
+/* =========================================================================
+   MEDIA QUERIES (RESPONSIVE DESIGN PARA MÓVILES - iPHONE)
+   ========================================================================= */
 @media screen and (max-width: 768px) {
-    .container { margin: 1rem; padding: 1.5rem; }
-    header h1 { font-size: 1.2rem; }
-    .header-actions { flex-direction: column; align-items: flex-start; }
-    .btn-logout { width: 100%; }
-    .filters { flex-direction: column; align-items: stretch; }
-    .filter-item, .filter-btn { width: 100%; margin-bottom: 10px; }
-    .btn-blue, .btn-green { width: 100%; }
+    .container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    /* Stack buttons and headers in mobile */
+    .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-logout {
+        width: 100%;
+    }
+
+    /* Stack filters vertically in mobile */
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-item, .filter-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    /* Make buttons full width on small screens */
+    .btn-blue, .btn-green {
+        width: 100%;
+    }
 }
