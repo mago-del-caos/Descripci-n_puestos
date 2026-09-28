@@ -1,45 +1,47 @@
-// =========================================================================
-// URL DE TU WORKER DE CLOUDFLARE CONFIGURADA
-// =========================================================================
 const WORKER_URL = "https://org-juventud-puestos-api.adrian-camelot32.workers.dev/api/registros"; 
 let baseDeDatos = [];
 
-// Opciones extraídas automáticamente del Organigrama (incluyendo Prefectura)
 const puestosOrganigrama = [
     "Dirección General", "Asistente Dirección General", "Subdirección Académica", 
-    "Direcciones Técnicas", "Preescolar", "Primaria", "Secundaria", "Preparatoria", 
-    "Coordinaciones", "Inglés", "Psicología", "Deportes", "Extraescolares", 
-    "Acad. Pastoral", "Francés", "Servicios Escolares", "Innovación Educativa", 
+    "Dirección Técnica Preescolar", "Dirección Técnica Primaria", "Dirección Técnicas Secundaria", "Dirección técnica Preparatoria", 
+    "Coordinaciones", "Coordinación Inglés", "Coordinación Psicología", "Coordinación Deportes", "Extraescolares", 
+    "Acad. Pastoral", "Coordinación Francés", "Servicios Escolares", "Innovación Educativa", 
     "Área Jurídica", "Comunicación y Marketing", "Admisiones", "Marketing MFRs", 
     "Redes Sociales", "Subdirección Administrativa", "Servicios Generales", 
     "Mantenimiento", "Limpieza", "Jardinería", "Compras", "Recursos Humanos", 
     "Control Interno", "Relaciones Públicas", "Sistemas", "Cajas", "Prefectura", "Otro"
 ];
 
-// Cargar las opciones cuando inicie la página
+// Cargar las opciones (checkboxes) cuando inicie la página
 document.addEventListener("DOMContentLoaded", () => {
-    const selectProporciona = document.getElementById('proporcionaInfo');
-    const selectRecibe = document.getElementById('recibeInfo');
+    const listaProporciona = document.getElementById('listaProporciona');
+    const listaRecibe = document.getElementById('listaRecibe');
     
     puestosOrganigrama.forEach(puesto => {
-        const opt1 = document.createElement('option');
-        opt1.value = puesto; opt1.textContent = puesto;
-        selectProporciona.appendChild(opt1);
+        // Crear casilla para "Proporciona"
+        const lbl1 = document.createElement('label');
+        lbl1.className = 'checkbox-item';
+        lbl1.innerHTML = `<input type="checkbox" value="${puesto}" onchange="actualizarExplicaciones('listaProporciona', 'containerProporciona', 'Lo que proporciona a')"> <span>${puesto}</span>`;
+        listaProporciona.appendChild(lbl1);
 
-        const opt2 = document.createElement('option');
-        opt2.value = puesto; opt2.textContent = puesto;
-        selectRecibe.appendChild(opt2);
+        // Crear casilla para "Recibe"
+        const lbl2 = document.createElement('label');
+        lbl2.className = 'checkbox-item';
+        lbl2.innerHTML = `<input type="checkbox" value="${puesto}" onchange="actualizarExplicaciones('listaRecibe', 'containerRecibe', 'Lo que recibe de')"> <span>${puesto}</span>`;
+        listaRecibe.appendChild(lbl2);
     });
 });
 
-// Generar cuadros de texto dinámicos según lo seleccionado
-function actualizarExplicaciones(selectId, containerId, textoLabel) {
-    const select = document.getElementById(selectId);
+// Generar cuadros de texto dinámicos leyendo las casillas marcadas
+function actualizarExplicaciones(listaId, containerId, textoLabel) {
+    const lista = document.getElementById(listaId);
     const container = document.getElementById(containerId);
-    const opcionesSeleccionadas = Array.from(select.selectedOptions).map(o => o.value);
     
-    // Limpiar el contenedor
-    container.innerHTML = ''; 
+    // Buscar qué casillas están marcadas en esta lista
+    const checkboxesMarcados = lista.querySelectorAll('input[type="checkbox"]:checked');
+    const opcionesSeleccionadas = Array.from(checkboxesMarcados).map(cb => cb.value);
+    
+    container.innerHTML = ''; // Limpiar el contenedor
     
     opcionesSeleccionadas.forEach(opcion => {
         const div = document.createElement('div');
@@ -48,7 +50,7 @@ function actualizarExplicaciones(selectId, containerId, textoLabel) {
         if (opcion === "Otro") {
             div.innerHTML = `
                 <label class="explicacion-label">Especifique el nombre del "Otro" Área/Puesto:</label>
-                <input type="text" class="otro-nombre-input" placeholder="Ej. Vigilancia, Proveedores externos..." required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="text" class="otro-nombre-input" placeholder="Ej. Vigilancia, Proveedores..." required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
                 <label class="explicacion-label">${textoLabel} (este otro puesto):</label>
                 <textarea class="explicacion-texto" rows="2" required placeholder="Describe la información o servicio..."></textarea>
             `;
@@ -62,7 +64,7 @@ function actualizarExplicaciones(selectId, containerId, textoLabel) {
     });
 }
 
-// Recopilar el puesto + la explicación en un texto ordenado para guardar
+// Recopilar el puesto + la explicación
 function recopilarExplicaciones(containerId) {
     const container = document.getElementById(containerId);
     const items = container.querySelectorAll('.explicacion-item');
@@ -73,16 +75,11 @@ function recopilarExplicaciones(containerId) {
         const textarea = item.querySelector('.explicacion-texto');
         
         if (inputOtro) {
-            const nombrePuesto = inputOtro.value.trim();
-            const texto = textarea.value.trim();
-            resultados.push(`• ${nombrePuesto} (Otro): ${texto}`);
+            resultados.push(`• ${inputOtro.value.trim()} (Otro): ${textarea.value.trim()}`);
         } else {
-            const nombrePuesto = textarea.getAttribute('data-puesto');
-            const texto = textarea.value.trim();
-            resultados.push(`• ${nombrePuesto}: ${texto}`);
+            resultados.push(`• ${textarea.getAttribute('data-puesto')}: ${textarea.value.trim()}`);
         }
     });
-    
     return resultados.join('\n');
 }
 
@@ -107,7 +104,6 @@ function login() {
     }
 }
 
-// Cerrar sesión
 function logout() {
     document.getElementById('loginUser').value = '';
     document.getElementById('loginPass').value = '';
@@ -119,9 +115,19 @@ function logout() {
     window.scrollTo(0, 0);
 }
 
-// Enviar datos al Worker (POST)
+// Enviar datos
 async function enviarDatos(e) {
     e.preventDefault();
+
+    // Validar que se haya seleccionado al menos una casilla
+    if (document.querySelectorAll('#listaProporciona input:checked').length === 0) {
+        alert("Por favor, selecciona al menos un área a la que proporciona información.");
+        return;
+    }
+    if (document.querySelectorAll('#listaRecibe input:checked').length === 0) {
+        alert("Por favor, selecciona al menos un área de la que recibe información.");
+        return;
+    }
     
     const botonGuardar = e.target.querySelector('button[type="submit"]');
     botonGuardar.disabled = true;
@@ -135,7 +141,6 @@ async function enviarDatos(e) {
         objetivo: document.getElementById('objetivo').value,
         resultados: document.getElementById('resultados').value,
         funciones: document.getElementById('funciones').value,
-        // Usamos la nueva función para agrupar todas las explicaciones
         proporcionaInfo: recopilarExplicaciones('containerProporciona'),
         recibeInfo: recopilarExplicaciones('containerRecibe'),
         tareasNoPropias: document.getElementById('tareasNoPropias').value
@@ -150,12 +155,14 @@ async function enviarDatos(e) {
 
         if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
 
-        const otro = confirm("Ficha guardada exitosamente en la base de datos.\n\n¿Hay otro puesto que debes reportar?");
+        const otro = confirm("Ficha guardada exitosamente.\n\n¿Hay otro puesto que debes reportar?");
         if (otro) {
             const empleadoActual = document.getElementById('nombreUsuario').value;
             document.getElementById('fichaForm').reset();
             document.getElementById('nombreUsuario').value = empleadoActual;
-            // Limpiar los contenedores dinámicos generados
+            
+            // Desmarcar todas las casillas y limpiar contenedores
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
             document.getElementById('containerProporciona').innerHTML = '';
             document.getElementById('containerRecibe').innerHTML = '';
             window.scrollTo(0, 0);
@@ -165,55 +172,46 @@ async function enviarDatos(e) {
         }
     } catch (error) {
         alert("Hubo un error al guardar los datos. Error: " + error.message);
-        console.error("Error completo:", error);
     } finally {
         botonGuardar.disabled = false;
         botonGuardar.textContent = "Guardar Ficha";
     }
 }
 
-// Leer datos del Worker (GET)
+// Leer datos (Admin)
 async function cargarDatosAdmin() {
     const tbody = document.getElementById('tableBody');
     tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Cargando datos...</td></tr>';
-    
     try {
         const response = await fetch(WORKER_URL);
         if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
-        
         baseDeDatos = await response.json();
         filtrarTabla();
     } catch (error) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Error al cargar los datos: ${error.message}</td></tr>`;
-        console.error("Error completo:", error);
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red;">Error: ${error.message}</td></tr>`;
     }
 }
 
-// Borrar registro permanentemente
+// Borrar registro
 async function borrarRegistro(id) {
-    const confirmacion = confirm("¿Estás seguro de que deseas eliminar este registro permanentemente?");
-    if (!confirmacion) return;
-
+    if (!confirm("¿Estás seguro de que deseas eliminar este registro permanentemente?")) return;
     try {
         const response = await fetch(WORKER_URL, {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: id })
         });
-
         if (!response.ok) throw new Error(`Error HTTP: ${response.status}`);
-
         baseDeDatos = baseDeDatos.filter(item => item.id !== id);
         filtrarTabla();
-        alert("Registro eliminado correctamente.");
+        alert("Registro eliminado.");
         cerrarModal();
     } catch (error) {
-        alert("Error al intentar borrar el registro: " + error.message);
-        console.error("Error completo:", error);
+        alert("Error al borrar: " + error.message);
     }
 }
 
-// Filtrar la tabla
+// Filtrar tabla
 function filtrarTabla() {
     const textFilter = document.getElementById('searchUser').value.toLowerCase();
     const areaFilter = document.getElementById('filterArea').value;
@@ -251,7 +249,7 @@ function filtrarTabla() {
     });
 }
 
-// Mostrar modal con detalles (Usa CSS pre-wrap para respetar los saltos de línea)
+// Ver Detalle
 function verDetalle(id) {
     const registro = baseDeDatos.find(r => r.id === id);
     if(!registro) return;
@@ -270,24 +268,17 @@ function verDetalle(id) {
         <div class="detail-item"><strong>Proporciona Info a:</strong><br><span style="white-space: pre-wrap;">${registro.proporcionaInfo || "N/A"}</span></div>
         <div class="detail-item"><strong>Recibe Info de:</strong><br><span style="white-space: pre-wrap;">${registro.recibeInfo || "N/A"}</span></div>
         <div class="detail-item"><strong>Tareas NO propias:</strong><br><span style="white-space: pre-wrap;">${registro.tareasNoPropias}</span></div>
-        <div class="detail-item" style="font-size: 0.8em; color: gray; margin-top: 15px;">
-            <strong>Fecha Registro:</strong> ${new Date(registro.fechaRegistro).toLocaleString()}
-        </div>
     `;
     document.getElementById('detailModal').classList.remove('hidden');
 }
 
-// Cerrar Modal
 function cerrarModal() {
     document.getElementById('detailModal').classList.add('hidden');
 }
 
-// Exportar a Excel (SheetJS)
+// Descargar Excel
 function descargarExcel() {
-    if(baseDeDatos.length === 0) {
-        alert("No hay datos para exportar.");
-        return;
-    }
+    if(baseDeDatos.length === 0) return alert("No hay datos para exportar.");
     
     const textFilter = document.getElementById('searchUser').value.toLowerCase();
     const areaFilter = document.getElementById('filterArea').value;
