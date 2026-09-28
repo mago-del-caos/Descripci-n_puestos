@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Registro - Instituto Juventud</title>
+    <!-- Librería SheetJS para exportar a Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Enlace al archivo CSS externo -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Contenedor del Banner -->
+<div class="banner-container">
+    <!-- Asegúrate de tener la imagen baner.png en la misma carpeta -->
+    <img src="baner.png" alt="Banner Instituto Juventud" class="banner-img" onerror="this.style.display='none'">
+</div>
+
+<header>
+    <h1>Ficha de Descripción de Puesto</h1>
+</header>
+
+<!-- Pantalla de Login -->
+<div class="container" id="loginView">
+    <h2 class="title-blue">Acceso al Sistema</h2>
+    <div class="form-group">
+        <label>Usuario:</label>
+        <input type="text" id="loginUser" placeholder="Ingresa tu usuario">
+    </div>
+    <div class="form-group">
+        <label>Contraseña:</label>
+        <input type="password" id="loginPass" placeholder="Ingresa tu contraseña">
+    </div>
+    <button class="btn-blue" onclick="login()">Ingresar</button>
+    <p id="loginError" class="error-msg">Credenciales incorrectas.</p>
+</div>
+
+<!-- Pantalla de Formulario (Usuario: juventud) -->
+<div class="container hidden" id="formView">
+    <div class="header-actions">
+        <h2 class="title-green">Registro de Funciones</h2>
+        <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+    
+    <form id="fichaForm" onsubmit="enviarDatos(event)">
+        <div class="form-group">
+            <label>Nombre del Empleado (Usuario que llena la ficha):</label>
+            <input type="text" id="nombreUsuario" required>
+        </div>
+
+        <h3 class="section-title">1. Identificación del Puesto</h3>
+        <div class="form-group">
+            <label>Denominación del puesto:</label>
+            <input type="text" id="denominacionPuesto" required>
+        </div>
+        <div class="form-group">
+            <label>Área a la que pertenece:</label>
+            <select id="areaPuesto" required>
+                <option value="">Selecciona un área...</option>
+                <option value="Académica">Académica</option>
+                <option value="Administrativa">Administrativa</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Reporta al puesto:</label>
+            <input type="text" id="reportaA" required>
+        </div>
+
+        <h3 class="section-title">2. Descripción Detallada</h3>
+        <div class="form-group">
+            <label>Objetivo / Finalidad del puesto:</label>
+            <textarea id="objetivo" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Áreas de eficacia / Resultados:</label>
+            <textarea id="resultados" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Funciones y tareas del puesto:</label>
+            <textarea id="funciones" rows="4" required></textarea>
+        </div>
+        
+        <h3 class="section-title">3. Flujo de Información</h3>
+        <div class="form-group">
+            <label>Áreas o puestos a quien proporciona información o servicio:</label>
+            <textarea id="proporcionaInfo" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Áreas o puestos de quien recibe información o servicio:</label>
+            <textarea id="recibeInfo" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Tareas que hoy se realizan y que no son propias del puesto:</label>
+            <textarea id="tareasNoPropias" rows="3" required></textarea>
+        </div>
+
+        <button type="submit" class="btn-green">Guardar Ficha</button>
+    </form>
+</div>
+
+<!-- Pantalla de Administrador (Usuario: admin) -->
+<div class="container hidden" id="adminView">
+    <div class="header-actions">
+        <h2 class="title-blue">Panel de Administración</h2>
+        <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+    </div>
+    
+    <div class="filters">
+        <div class="filter-item">
+            <label>Buscar por Empleado:</label>
+            <input type="text" id="searchUser" onkeyup="filtrarTabla()" placeholder="Escribe un nombre...">
+        </div>
+        <div class="filter-item">
+            <label>Filtrar por Área:</label>
+            <select id="filterArea" onchange="filtrarTabla()">
+                <option value="Todas">Todas las áreas</option>
+                <option value="Académica">Académica</option>
+                <option value="Administrativa">Administrativa</option>
+                <option value="Mantenimiento">Mantenimiento</option>
+            </select>
+        </div>
+        <div class="filter-btn">
+            <button class="btn-green btn-full" onclick="descargarExcel()">Descargar Excel</button>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Empleado</th>
+                    <th>Puesto</th>
+                    <th>Área</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Los registros se cargan aquí -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal para ver detalles -->
+<div id="detailModal" class="modal hidden">
+    <div class="modal-content">
+        <h3 class="title-blue">Detalles del Registro</h3>
+        <div id="modalContentBody"></div>
+        <div class="modal-footer">
+            <button class="btn-blue btn-full" onclick="cerrarModal()">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- Enlace al archivo JS externo -->
+<script src="app.js"></script>
+</body>
+</html>
