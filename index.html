@@ -82,29 +82,23 @@
         
         <h3 class="section-title">3. Flujo de Información</h3>
         
-        <!-- LISTA DE CHECKBOXES (A prueba de celulares) -->
-        <div class="form-group">
-            <label>Áreas o puestos a quien proporciona información o servicio:<br>
-            <small style="color: #666; font-weight: normal;">(Selecciona todas las opciones que apliquen tocando las casillas)</small></label>
+        <!-- NUEVO SISTEMA DE PREGUNTAS SÍ/NO -->
+        <div class="form-group" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+            <label class="title-blue" style="font-size: 1.1em; border-bottom: 2px solid var(--azul); padding-bottom: 5px;">A. Áreas a las que PROPORCIONA información o servicio:</label>
+            <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">Selecciona "Sí" en los departamentos que apliquen para detallar la información.</p>
             
-            <div id="listaProporciona" class="checkbox-list"></div>
-            
-            <!-- Aquí aparecerán los cuadros de texto dinámicos -->
-            <div id="containerProporciona" class="explicaciones-container"></div>
+            <div id="preguntasProporciona"></div>
         </div>
         
-        <div class="form-group">
-            <label>Áreas o puestos de quien recibe información o servicio:<br>
-            <small style="color: #666; font-weight: normal;">(Selecciona todas las opciones que apliquen tocando las casillas)</small></label>
+        <div class="form-group" style="background-color: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; margin-top: 20px;">
+            <label class="title-blue" style="font-size: 1.1em; border-bottom: 2px solid var(--azul); padding-bottom: 5px;">B. Áreas de las que RECIBE información o servicio:</label>
+            <p style="font-size: 0.9em; color: #666; margin-bottom: 15px;">Selecciona "Sí" en los departamentos que apliquen para detallar la información.</p>
             
-            <div id="listaRecibe" class="checkbox-list"></div>
-            
-            <!-- Aquí aparecerán los cuadros de texto dinámicos -->
-            <div id="containerRecibe" class="explicaciones-container"></div>
+            <div id="preguntasRecibe"></div>
         </div>
-        <!-- FIN DE CHECKBOXES -->
+        <!-- FIN NUEVO SISTEMA -->
 
-        <div class="form-group">
+        <div class="form-group" style="margin-top: 25px;">
             <label>Tareas que hoy se realizan y que no son propias del puesto:</label>
             <textarea id="tareasNoPropias" rows="3" required></textarea>
         </div>
@@ -165,7 +159,7 @@
     </div>
 </div>
 
-<!-- Archivo maestro de control de versiones cargado al final para evitar bloqueos en Android -->
+<!-- Archivo maestro de control de versiones -->
 <script src="version.js"></script>
 </body>
 </html>
