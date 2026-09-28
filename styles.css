@@ -1,0 +1,238 @@
+/* Variables de color institucionales */
+:root {
+    --azul: #004b93;
+    --verde: #28a745;
+    --amarillo: #ffc107;
+    --blanco: #ffffff;
+    --fondo: #f4f7f6;
+    --texto: #333333;
+    --borde: #cccccc;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--fondo);
+    color: var(--texto);
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Banner Styles --- */
+.banner-container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    background-color: var(--blanco);
+}
+
+.banner-img {
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+    object-fit: cover;
+    display: block;
+}
+
+/* --- Header Styles --- */
+header {
+    background-color: var(--azul);
+    color: var(--blanco);
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 5px solid var(--amarillo);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+/* --- Layout Structure --- */
+.container {
+    max-width: 900px;
+    margin: 2rem auto;
+    background: var(--blanco);
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Typography --- */
+.title-blue { color: var(--azul); margin-top: 0; }
+.title-green { color: var(--verde); margin-top: 0; }
+.section-title { 
+    color: var(--amarillo); 
+    border-bottom: 2px solid var(--amarillo); 
+    padding-bottom: 5px; 
+    margin-top: 25px;
+}
+.error-msg { color: red; display: none; margin-top: 10px; font-weight: bold; text-align: center;}
+
+/* --- Forms --- */
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: var(--azul);
+}
+
+input[type="text"], 
+input[type="password"], 
+select, 
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--borde);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 16px; /* 16px evita el zoom automático en iPhones */
+}
+
+/* --- Buttons --- */
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover { opacity: 0.9; }
+
+.btn-blue { background-color: var(--azul); color: var(--blanco); }
+.btn-green { background-color: var(--verde); color: var(--blanco); }
+.btn-yellow { background-color: var(--amarillo); color: #000; }
+.btn-logout { background-color: #dc3545; color: white; }
+.btn-full { width: 100%; }
+
+/* --- Admin Panel --- */
+.header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filters {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+    background: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid var(--borde);
+}
+
+.filter-item { flex: 1; min-width: 200px; }
+.filter-btn { flex: 0; min-width: 150px; }
+
+/* --- Table Styles --- */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    min-width: 600px; /* Asegura que la tabla no colapse en móviles */
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--azul);
+    color: var(--blanco);
+    white-space: nowrap;
+}
+
+tr:nth-child(even) { background-color: #f9f9f9; }
+
+/* --- Modal Styles --- */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+.modal-content {
+    background: var(--blanco);
+    padding: 25px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-top: 5px solid var(--verde);
+}
+
+.detail-item {
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.detail-item strong { color: var(--azul); }
+.modal-footer { margin-top: 20px; text-align: center; }
+
+/* =========================================================================
+   MEDIA QUERIES (RESPONSIVE DESIGN PARA MÓVILES - iPHONE)
+   ========================================================================= */
+@media screen and (max-width: 768px) {
+    .container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    /* Stack buttons and headers in mobile */
+    .header-actions {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-logout {
+        width: 100%;
+    }
+
+    /* Stack filters vertically in mobile */
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .filter-item, .filter-btn {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    /* Make buttons full width on small screens */
+    .btn-blue, .btn-green {
+        width: 100%;
+    }
+}
