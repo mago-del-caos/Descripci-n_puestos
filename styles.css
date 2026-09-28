@@ -20,18 +20,16 @@ body {
 /* --- Banner Styles --- */
 .banner-container {
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
     text-align: center;
     background-color: var(--blanco);
 }
 
 .banner-img {
     width: 100%;
-    height: auto;
-    max-height: 250px;
-    object-fit: cover;
+    max-width: 1000px; /* Evita que crezca demasiado en monitores grandes */
+    height: auto;      /* Mantiene la proporción original sin recortar */
     display: block;
+    margin: 0 auto;    /* Centra la imagen en el contenedor */
 }
 
 /* --- Header Styles --- */
