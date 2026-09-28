@@ -82,14 +82,23 @@
         </div>
         
         <h3 class="section-title">3. Flujo de Información</h3>
+        
+        <!-- NUEVOS MENÚS DESPLEGABLES MÚLTIPLES -->
         <div class="form-group">
-            <label>Áreas o puestos a quien proporciona información o servicio:</label>
-            <textarea id="proporcionaInfo" rows="2" required></textarea>
+            <label>Áreas o puestos a quien proporciona información o servicio:<br>
+            <small style="color: #666; font-weight: normal;">(En PC: Mantén Ctrl o Cmd para seleccionar varios. En Móvil: Toca varios para seleccionarlos)</small></label>
+            <select id="proporcionaInfo" multiple class="multi-select" onchange="verificarOtro('proporcionaInfo', 'proporcionaInfoOtro')" required></select>
+            <input type="text" id="proporcionaInfoOtro" class="hidden custom-input" placeholder="Escribe el nombre del otro puesto...">
         </div>
+        
         <div class="form-group">
-            <label>Áreas o puestos de quien recibe información o servicio:</label>
-            <textarea id="recibeInfo" rows="2" required></textarea>
+            <label>Áreas o puestos de quien recibe información o servicio:<br>
+            <small style="color: #666; font-weight: normal;">(En PC: Mantén Ctrl o Cmd para seleccionar varios. En Móvil: Toca varios para seleccionarlos)</small></label>
+            <select id="recibeInfo" multiple class="multi-select" onchange="verificarOtro('recibeInfo', 'recibeInfoOtro')" required></select>
+            <input type="text" id="recibeInfoOtro" class="hidden custom-input" placeholder="Escribe el nombre del otro puesto...">
         </div>
+        <!-- FIN NUEVOS MENÚS -->
+
         <div class="form-group">
             <label>Tareas que hoy se realizan y que no son propias del puesto:</label>
             <textarea id="tareasNoPropias" rows="3" required></textarea>
